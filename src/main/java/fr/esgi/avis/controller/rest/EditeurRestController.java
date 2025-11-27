@@ -29,9 +29,14 @@ public class EditeurRestController {
 
     @PostMapping("/addEdditeur/{name}{logo}")
     @Operation(summary = "Add a new editeur")
-    public Editeur addEditeur(String name, String logo) {
-        return editeurService.ajouterEditeur(new Editeur(name,logo));
+    public ResponseEntity<Editeur> addEditeur(@RequestBody Editeur editeur) {
+
+        if ( editeur == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(editeurService.ajouterEditeur(editeur));
     }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get an editeur by id")
     public Editeur getEditeurById(@PathVariable Long id) {
@@ -48,6 +53,25 @@ public class EditeurRestController {
     @Operation(summary = "Delete an editeur by id")
     public void deleteEditeur(@PathVariable Long id) {
         editeurService.supprimerEditeur(id);
+    }
+
+    /*@PutMapping("/update/{id}")
+    @Operation(summary = "Update an editeur by id")
+    public ResponseEntity<Editeur> updateEditeur(@PathVariable Long id, @RequestBody Editeur editeur) {
+
+        if ( editeur == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(editeurService.updateEditeur(id,editeur));
+    }*/
+    @PutMapping("/put/{id}")
+    @Operation(summary = "Put an editeur by id")
+    public ResponseEntity<Editeur> putEditeur(@PathVariable Long id, @RequestBody Editeur editeur) {
+
+        if ( editeur == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(editeurService.putEditeur(id,editeur));
     }
 
 

@@ -46,5 +46,16 @@ public class EditeurServiceImpl implements EditeurService {
             throw new EditeurInexistantException();
         }
     }
+
+    @Override
+    public Editeur putEditeur(Long id, Editeur editeur) {
+        if (editeurRepository.existsById(id)) {
+            editeur.setId(id);
+            return editeurRepository.save(editeur);
+        }
+        throw new EditeurInexistantException();
+    }
+
+
 }
 

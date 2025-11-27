@@ -15,4 +15,6 @@ public interface EditeurService {
     Editeur recupererEditeur(Long id);
 
     void supprimerEditeur(Long id);
+
+    Editeur putEditeur(Long id, Editeur editeur);
 }
