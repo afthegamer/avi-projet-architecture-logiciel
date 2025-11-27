@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hello MVC :) !</h1>
+<a href="/exportExcel">download excel</a>
+<a href="/exportPdf">download pdf</a>
+<table>
+    <tr th:each="editeur:${editeurs}">
+        <td th:text="${editeur.id}"></td>
+        <td th:text="${editeur.nom}"></td>
+        <td><img th:src="@{'https://logo.clearbit.com/' + ${editeur.logo} + '?size=150'}" alt="Logo de l'éditeur'"></td>
+    </tr>
+</table>
+</body>
+</html>
