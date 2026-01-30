@@ -30,6 +30,9 @@ public class HelloController {
 
     @PostConstruct
     public void init(){
+        if (logoDevToken == null || logoDevToken.isBlank()) {
+            logoDevToken = "${LOGO_DEV_TOKEN}";
+        }
         editeurService.ajouterEditeur(new Editeur("Ubisoft","ubisoft.com"));
         editeurService.ajouterEditeur(new Editeur("Bandai Namco","bandainamco.com"));
         editeurService.ajouterEditeur(new Editeur("Konami","konami.com"));
