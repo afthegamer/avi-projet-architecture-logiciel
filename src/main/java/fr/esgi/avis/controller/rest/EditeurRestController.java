@@ -21,6 +21,7 @@ public class EditeurRestController {
         this.editeurService = editeurService;
     }
 
+    // Retourne tous les éditeurs au format JSON.
     @GetMapping("/")
     @Operation(summary = "Get all editeurs")
     public List<Editeur> getAllEditeurs() {
@@ -37,6 +38,7 @@ public class EditeurRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(editeurService.ajouterEditeur(editeur));
     }
 
+    // Récupère un éditeur par identifiant (404 si introuvable).
     @GetMapping("/{id}")
     @Operation(summary = "Get an editeur by id")
     public Editeur getEditeurById(@PathVariable Long id) {

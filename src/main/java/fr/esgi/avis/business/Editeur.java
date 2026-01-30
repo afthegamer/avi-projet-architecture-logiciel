@@ -15,12 +15,15 @@ import lombok.Data;
 @Data
 public class Editeur {
 
+    // Identifiant auto-généré par JPA/Hibernate.
     @Id
     @GeneratedValue
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+    // Nom obligatoire (validation @NotBlank).
     @NotBlank(message = "Le nom de l'éditeur ne doit pas être vide")
     private String nom;
+    // Nom de domaine/URL du logo (utilisé pour construire l'URL logo.dev).
     private String logo;
 
     public Editeur() {}

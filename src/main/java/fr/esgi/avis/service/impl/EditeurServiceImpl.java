@@ -14,6 +14,8 @@ public class EditeurServiceImpl implements EditeurService {
 
     //Le service a besoin de faire appel au repository
     //(principe de délégation)
+    // Ici le service ne fait que valider/maitriser l'accès aux données
+    // en délégant au repository qui parle à la base.
 
     private final EditeurRepository editeurRepository;
 
@@ -33,6 +35,7 @@ public class EditeurServiceImpl implements EditeurService {
 
     @Override
     public Editeur recupererEditeur(Long id) {
+        // On cherche en base : si absent, on lève l'exception métier.
         Optional<Editeur> editeurOptional = editeurRepository.findById(id);
         return editeurOptional.orElseThrow(
                 EditeurInexistantException::new);

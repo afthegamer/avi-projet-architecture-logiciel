@@ -37,6 +37,7 @@ public class HelloController {
         if (logoDevToken == null || logoDevToken.isBlank()) {
             logoDevToken = "${LOGO_DEV_TOKEN}";
         }
+        // On crée quelques éditeurs dès le démarrage pour alimenter la page d’accueil.
         editeurService.ajouterEditeur(new Editeur("Ubisoft","ubisoft.com"));
         editeurService.ajouterEditeur(new Editeur("Bandai Namco","bandainamco.com"));
         editeurService.ajouterEditeur(new Editeur("Konami","konami.com"));
