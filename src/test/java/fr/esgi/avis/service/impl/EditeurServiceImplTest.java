@@ -3,7 +3,6 @@ package fr.esgi.avis.service.impl;
 import fr.esgi.avis.business.Editeur;
 import fr.esgi.avis.exception.EditeurInexistantException;
 import fr.esgi.avis.repository.EditeurRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -48,7 +49,7 @@ class EditeurServiceImplTest {
         LOGGER.info("Résultat du save: {}", result);
 
         // Assert
-        Assertions.assertEquals(editeur, result);
+        assertThat(result).isEqualTo(editeur);
         verify(editeurRepository, times(1)).save(any(Editeur.class));
         LOGGER.info("Vérifications OK pour testAjouterEditeur");
     }
@@ -65,10 +66,13 @@ class EditeurServiceImplTest {
         LOGGER.info("Résultat findAll: {}", result);
 
         // Assert
-        Assertions.assertEquals(expected, result);
-        Assertions.assertEquals(1, result.size());
-        Assertions.assertEquals("nom", result.get(0).getNom());
-        Assertions.assertEquals("logo", result.get(0).getLogo());
+        assertThat(result)
+                .hasSize(1)
+                .containsExactlyElementsOf(expected)
+                .allSatisfy(e -> {
+                    assertThat(e.getNom()).isEqualTo("nom");
+                    assertThat(e.getLogo()).isEqualTo("logo");
+                });
         verify(editeurRepository, times(1)).findAll();
         LOGGER.info("Vérifications OK pour testRecupererEditeurs");
     }
@@ -85,7 +89,7 @@ class EditeurServiceImplTest {
         LOGGER.info("Résultat findById: {}", result);
 
         // Assert
-        Assertions.assertEquals(editeur, result);
+        assertThat(result).isEqualTo(editeur);
         verify(editeurRepository, times(1)).findById(1L);
         LOGGER.info("Vérifications OK pour testRecupererEditeurByIdFound");
     }
@@ -97,8 +101,8 @@ class EditeurServiceImplTest {
         LOGGER.info("Préparation du testRecupererEditeurByIdNotFound avec id=1 (empty)");
 
         // Act + Assert
-        Assertions.assertThrows(EditeurInexistantException.class,
-                () -> editeurServiceImpl.recupererEditeur(1L));
+        assertThatThrownBy(() -> editeurServiceImpl.recupererEditeur(1L))
+                .isInstanceOf(EditeurInexistantException.class);
         verify(editeurRepository, times(1)).findById(1L);
         LOGGER.info("Exception attendue levée pour testRecupererEditeurByIdNotFound");
     }
@@ -116,7 +120,7 @@ class EditeurServiceImplTest {
         LOGGER.info("Résultat de recupererEditeur pour id {}: {}", id, result);
 
         // Assert
-        Assertions.assertEquals(editeur, result, "L'éditeur retourné doit correspondre au mock");
+        assertThat(result).isEqualTo(editeur);
         verify(editeurRepository, times(1)).findById(id);
         LOGGER.info("Vérifications OK pour testRecupererEditeurAvecLogsDetaillees");
     }
@@ -129,9 +133,8 @@ class EditeurServiceImplTest {
         LOGGER.info("Préparation du testRecupererEditeurAvecLogsDetailleesNotFound id={} (empty)", id);
 
         // Act + Assert
-        Assertions.assertThrows(EditeurInexistantException.class,
-                () -> editeurServiceImpl.recupererEditeur(id),
-                "Une exception doit être levée si l'éditeur est absent");
+        assertThatThrownBy(() -> editeurServiceImpl.recupererEditeur(id))
+                .isInstanceOf(EditeurInexistantException.class);
         verify(editeurRepository, times(1)).findById(id);
         LOGGER.info("Exception attendue levée pour testRecupererEditeurAvecLogsDetailleesNotFound");
     }
@@ -159,8 +162,8 @@ class EditeurServiceImplTest {
         LOGGER.info("Préparation du testSupprimerEditeurNotExists avec id=1 (n'existe pas)");
 
         // Act + Assert
-        Assertions.assertThrows(EditeurInexistantException.class,
-                () -> editeurServiceImpl.supprimerEditeur(1L));
+        assertThatThrownBy(() -> editeurServiceImpl.supprimerEditeur(1L))
+                .isInstanceOf(EditeurInexistantException.class);
         verify(editeurRepository, times(1)).existsById(1L);
         verify(editeurRepository, never()).deleteById(anyLong());
         LOGGER.info("Exception attendue levée pour testSupprimerEditeurNotExists");
@@ -179,10 +182,10 @@ class EditeurServiceImplTest {
         LOGGER.info("Résultat save put: {}", result);
 
         // Assert
-        Assertions.assertEquals(editeur, result);
+        assertThat(result).isEqualTo(editeur);
         ArgumentCaptor<Editeur> captor = ArgumentCaptor.forClass(Editeur.class);
         verify(editeurRepository, times(1)).save(captor.capture());
-        Assertions.assertEquals(1L, captor.getValue().getId());
+        assertThat(captor.getValue().getId()).isEqualTo(1L);
         LOGGER.info("Vérifications OK pour testPutEditeurExists");
     }
 
@@ -193,8 +196,8 @@ class EditeurServiceImplTest {
         LOGGER.info("Préparation du testPutEditeurNotExists avec id=1 (n'existe pas)");
 
         // Act + Assert
-        Assertions.assertThrows(EditeurInexistantException.class,
-                () -> editeurServiceImpl.putEditeur(1L, new Editeur("nom", "logo")));
+        assertThatThrownBy(() -> editeurServiceImpl.putEditeur(1L, new Editeur("nom", "logo")))
+                .isInstanceOf(EditeurInexistantException.class);
         verify(editeurRepository, times(1)).existsById(1L);
         verify(editeurRepository, never()).save(any(Editeur.class));
         LOGGER.info("Exception attendue levée pour testPutEditeurNotExists");
