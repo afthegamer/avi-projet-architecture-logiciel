@@ -88,7 +88,14 @@ public class HelloController {
                 row.createCell(1).setCellValue(editeur.getNom());
                 row.createCell(2).setCellValue(editeur.getLogo());
             }
-            workbook.write(response.getOutputStream());
+            // Écrire dans un buffer pour éviter les soucis de flux déjà utilisés,
+            // puis écrire une seule fois dans la réponse.
+            try (var baos = new java.io.ByteArrayOutputStream()) {
+                workbook.write(baos);
+                baos.flush();
+                response.getOutputStream().write(baos.toByteArray());
+                response.flushBuffer();
+            }
         }
     }
     @GetMapping("/exportPdf")
