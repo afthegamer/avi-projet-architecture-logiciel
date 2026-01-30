@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter
@@ -19,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 public class HelloController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelloController.class);
 
     private final EditeurService editeurService;
     @Value("${logo-dev-token:}")
@@ -46,7 +50,9 @@ public class HelloController {
     @GetMapping("/")
     public String hello(Model model) {
         //la vue va recevoir un enssemeble d'attirbue
-        model.addAttribute("editeurs", editeurService.recupererEditeur());
+        var editeurs = editeurService.recupererEditeur();
+        LOGGER.info("Nombre d'éditeurs envoyés à la vue: {}", editeurs.size());
+        model.addAttribute("editeurs", editeurs);
         model.addAttribute("logoDevToken", logoDevToken);
         //la méthode du controller utilise une vue qui s'appelle index.html
         //index.html est dans le dossier resources/templates
