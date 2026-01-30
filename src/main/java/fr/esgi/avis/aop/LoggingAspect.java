@@ -23,6 +23,8 @@ public class LoggingAspect {
     public void editeurControllerPointcut() {
     }
 
+    // L’annotation @Around indique : "avant et après chaque méthode du pointcut,
+    // exécute ce code pour tracer les appels".
     @Around("editeurControllerPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
