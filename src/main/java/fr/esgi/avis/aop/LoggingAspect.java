@@ -17,15 +17,15 @@ import java.util.Arrays;
 public class LoggingAspect {
 
     // Pointcut = zone observée : ici toutes les méthodes de l'app (package fr.esgi.avis..)
-    // dont le nom commence par "i" (ex : init(), invokeSomething()).
+    // dont le nom commence par "r" et qui renvoient une List (ex : recupererXXX()).
     // On limite à notre code pour éviter de proxyfier des classes Spring internes.
-    @Pointcut("execution(* fr.esgi.avis..i*(..))")
-    public void methodsStartingWithI() {
+    @Pointcut("execution(java.util.List fr.esgi.avis..r*(..))")
+    public void methodsStartingWithRReturningList() {
     }
 
     // L’annotation @Around indique : "avant et après chaque méthode du pointcut,
     // exécute ce code pour tracer les appels".
-    @Around("methodsStartingWithI()")
+    @Around("methodsStartingWithRReturningList()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
         try {
