@@ -6,8 +6,8 @@
 </head>
 <body>
 <h1>Hello MVC :) !</h1>
-<a href="/exportExcel">download excel</a>
-<a href="/exportPdf">download pdf</a>
+<a href="/exportExcel" download="editeurs.xlsx">download excel</a>
+<a href="/exportPdf" download="editeurs.pdf">download pdf</a>
 <table>
     <tr th:each="editeur:${editeurs}">
         <td th:text="${editeur.id}"></td>
