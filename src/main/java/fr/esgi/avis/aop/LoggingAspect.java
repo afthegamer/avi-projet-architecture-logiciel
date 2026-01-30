@@ -16,12 +16,12 @@ import java.util.Arrays;
 @Component
 public class LoggingAspect {
 
-    // Toutes les méthodes des classes annotées Service
-    @Pointcut("@within(org.springframework.stereotype.Service)")
-    public void avisPackagePointcut() {
+    // Toutes les méthodes de la classe HelloController (EditeurController)
+    @Pointcut("within(fr.esgi.avis.controller.HelloController)")
+    public void editeurControllerPointcut() {
     }
 
-    @Around("avisPackagePointcut()")
+    @Around("editeurControllerPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
         try {
