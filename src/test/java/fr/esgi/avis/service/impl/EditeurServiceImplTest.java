@@ -47,18 +47,16 @@ class EditeurServiceImplTest {
     }
 
     @Test
-    void testRecupererEditeurList() {
+    void testRecupererEditeurs() {
         // Arrange
-        when(editeurRepository.findAll()).thenReturn(List.of(
-                new Editeur("nom1", "logo1"),
-                new Editeur("nom2", "logo2")
-        ));
+        List<Editeur> expected = List.of(new Editeur("nom", "logo"));
+        when(editeurRepository.findAll()).thenReturn(expected);
 
         // Act
         List<Editeur> result = editeurServiceImpl.recupererEditeur();
 
         // Assert
-        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(expected, result);
         verify(editeurRepository, times(1)).findAll();
     }
 
