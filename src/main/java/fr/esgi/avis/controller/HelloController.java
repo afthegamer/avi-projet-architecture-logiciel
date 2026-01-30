@@ -7,6 +7,7 @@ import fr.esgi.avis.vue.EditerPDFView;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class HelloController {
 
     private final EditeurService editeurService;
+    @Value("${logo-dev-token:}")
+    private String logoDevToken;
 
     public HelloController(EditeurService editeurService) {
         this.editeurService = editeurService;
@@ -41,6 +44,7 @@ public class HelloController {
     public String hello(Model model) {
         //la vue va recevoir un enssemeble d'attirbue
         model.addAttribute("editeurs", editeurService.recupererEditeur());
+        model.addAttribute("logoDevToken", logoDevToken);
         //la méthode du controller utilise une vue qui s'appelle index.html
         //index.html est dans le dossier resources/templates
         return "index.html";

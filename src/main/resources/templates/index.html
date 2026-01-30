@@ -13,7 +13,7 @@
         <td th:text="${editeur.id}"></td>
         <td th:text="${editeur.nom}"></td>
         <td>
-            <img th:src="@{'https://img.logo.dev/' + ${#strings.toLowerCase(editeur.logo)} + '?token=' + ${@environment.getProperty('logo-dev-token')} + '&size=150'}"
+            <img th:src="@{'https://img.logo.dev/' + ${#strings.toLowerCase(editeur.logo)} + '?token=' + ${logoDevToken} + '&size=150'}"
                  alt="Logo de l'éditeur">
         </td>
     </tr>
