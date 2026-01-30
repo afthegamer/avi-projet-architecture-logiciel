@@ -27,12 +27,12 @@ public class HelloController {
 
     @PostConstruct
     public void init(){
-        editeurService.ajouterEditeur(new Editeur("Ubisoft","Ubisoft.fr"));
-        editeurService.ajouterEditeur(new Editeur("Bandai Namco","bandainamco.co.jp"));
+        editeurService.ajouterEditeur(new Editeur("Ubisoft","ubisoft.com"));
+        editeurService.ajouterEditeur(new Editeur("Bandai Namco","bandainamco.com"));
         editeurService.ajouterEditeur(new Editeur("Konami","konami.com"));
         editeurService.ajouterEditeur(new Editeur("Tencent","tencent.com"));
         editeurService.ajouterEditeur(new Editeur("Capcom","capcom.com"));
-        editeurService.ajouterEditeur(new Editeur("Rio Games","riotgames.com"));
+        editeurService.ajouterEditeur(new Editeur("Riot Games","riotgames.com"));
         editeurService.ajouterEditeur(new Editeur("CD Projekt","cdprojekt.com"));
         //Editeur e = Editeur.builder().nom("").build();
     }
