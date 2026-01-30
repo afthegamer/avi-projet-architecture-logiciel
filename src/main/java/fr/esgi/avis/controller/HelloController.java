@@ -2,18 +2,25 @@ package fr.esgi.avis.controller;
 
 import fr.esgi.avis.business.Editeur;
 import fr.esgi.avis.service.EditeurService;
-import fr.esgi.avis.vue.EditerExcelView;
-import fr.esgi.avis.vue.EditerPDFView;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 
 @Getter
 @Setter
@@ -60,18 +67,46 @@ public class HelloController {
         return "index.html";
     }
     @GetMapping("/exportExcel")
-    public ModelAndView exportExcel(){
-        ModelAndView mav = new ModelAndView( new EditerExcelView());
-        //deux ligne équivalente
-        //mav.model().put("editeurs",editeurs);
-        mav.addObject("editeurs", editeurService.recupererEditeur());
-        return mav;
+    public void exportExcel(HttpServletResponse response) throws Exception{
+        var editeurs = editeurService.recupererEditeur();
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=editeurs.xlsx");
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Editeurs");
+            Row header = sheet.createRow(0);
+            Cell headerCell = header.createCell(0);
+            headerCell.setCellValue("ID");
+            headerCell = header.createCell(1);
+            headerCell.setCellValue("Nom de l'éditeur");
+            headerCell = header.createCell(2);
+            headerCell.setCellValue("Logo");
+            int rowNum = 1;
+            for (Editeur editeur : editeurs) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(editeur.getId());
+                row.createCell(1).setCellValue(editeur.getNom());
+                row.createCell(2).setCellValue(editeur.getLogo());
+            }
+            workbook.write(response.getOutputStream());
+        }
     }
     @GetMapping("/exportPdf")
-    public ModelAndView editerPdfVue(){
-        ModelAndView mav = new ModelAndView( new EditerPDFView());
-        mav.addObject("editeurs", editeurService.recupererEditeur());
-        return mav;
+    public void editerPdfVue(HttpServletResponse response) throws Exception{
+        var editeurs = editeurService.recupererEditeur();
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition","attachment; filename=editeurs.pdf");
+
+        Document doc = new Document();
+        PdfWriter.getInstance(doc, response.getOutputStream());
+        doc.open();
+        for (Editeur editeur : editeurs) {
+            doc.add(new Paragraph(String.valueOf(editeur.getId())));
+            doc.add(new Paragraph(editeur.getNom()));
+            doc.add(new Paragraph(editeur.getLogo()));
+            doc.add(new Paragraph(" "));
+        }
+        doc.close();
 
     }
 
