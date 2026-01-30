@@ -18,7 +18,7 @@ public class EditerPDFView extends AbstractPdfView{
                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
         // TODO: ajouter une ligne pour chaque editeur
         for (Editeur editeur : (List <Editeur>)  model.get("editeurs")) {
-            doc.add(new Paragraph(editeur.getId()));
+            doc.add(new Paragraph(String.valueOf(editeur.getId())));
             doc.add(new Paragraph(editeur.getNom()));
             doc.add(new Paragraph(editeur.getLogo()));
         }
