@@ -104,6 +104,39 @@ class EditeurServiceImplTest {
     }
 
     @Test
+    void testRecupererEditeurAvecLogsDetaillees() {
+        // Arrange
+        long id = 42L;
+        Editeur editeur = new Editeur("nom", "logo");
+        when(editeurRepository.findById(id)).thenReturn(Optional.of(editeur));
+        LOGGER.info("Préparation du testRecupererEditeurAvecLogsDetaillees id={}, editeur={}", id, editeur);
+
+        // Act
+        Editeur result = editeurServiceImpl.recupererEditeur(id);
+        LOGGER.info("Résultat de recupererEditeur pour id {}: {}", id, result);
+
+        // Assert
+        Assertions.assertEquals(editeur, result, "L'éditeur retourné doit correspondre au mock");
+        verify(editeurRepository, times(1)).findById(id);
+        LOGGER.info("Vérifications OK pour testRecupererEditeurAvecLogsDetaillees");
+    }
+
+    @Test
+    void testRecupererEditeurAvecLogsDetailleesNotFound() {
+        // Arrange
+        long id = 99L;
+        when(editeurRepository.findById(id)).thenReturn(Optional.empty());
+        LOGGER.info("Préparation du testRecupererEditeurAvecLogsDetailleesNotFound id={} (empty)", id);
+
+        // Act + Assert
+        Assertions.assertThrows(EditeurInexistantException.class,
+                () -> editeurServiceImpl.recupererEditeur(id),
+                "Une exception doit être levée si l'éditeur est absent");
+        verify(editeurRepository, times(1)).findById(id);
+        LOGGER.info("Exception attendue levée pour testRecupererEditeurAvecLogsDetailleesNotFound");
+    }
+
+    @Test
     void testSupprimerEditeurExists() {
         // Arrange
         when(editeurRepository.existsById(1L)).thenReturn(true);
