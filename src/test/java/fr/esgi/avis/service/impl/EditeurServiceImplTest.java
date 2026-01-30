@@ -57,6 +57,9 @@ class EditeurServiceImplTest {
 
         // Assert
         Assertions.assertEquals(expected, result);
+        Assertions.assertEquals(1, result.size());
+        Assertions.assertEquals("nom", result.get(0).getNom());
+        Assertions.assertEquals("logo", result.get(0).getLogo());
         verify(editeurRepository, times(1)).findAll();
     }
 
