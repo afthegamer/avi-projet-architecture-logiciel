@@ -16,16 +16,16 @@ import java.util.Arrays;
 @Component
 public class LoggingAspect {
 
-    // Pointcut = zone observée : ici toutes les méthodes du HelloController.
-    // Cela veut dire : chaque appel d’une méthode du HelloController passera
-    // par le code ci-dessous (logAround) pour qu’on puisse écrire un log.
-    @Pointcut("within(fr.esgi.avis.controller.HelloController)")
-    public void editeurControllerPointcut() {
+    // Pointcut = zone observée : ici toutes les méthodes de l'app (package fr.esgi.avis..)
+    // dont le nom commence par "i" (ex : init(), invokeSomething()).
+    // On limite à notre code pour éviter de proxyfier des classes Spring internes.
+    @Pointcut("execution(* fr.esgi.avis..i*(..))")
+    public void methodsStartingWithI() {
     }
 
     // L’annotation @Around indique : "avant et après chaque méthode du pointcut,
     // exécute ce code pour tracer les appels".
-    @Around("editeurControllerPointcut()")
+    @Around("methodsStartingWithI()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
         try {
