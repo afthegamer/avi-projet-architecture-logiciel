@@ -68,11 +68,13 @@ public class HelloController {
     }
     @GetMapping("/exportExcel")
     public void exportExcel(HttpServletResponse response) throws Exception{
+        LOGGER.info("Début export Excel");
         var editeurs = editeurService.recupererEditeur();
+        LOGGER.info("Nombre d'éditeurs à exporter: {}", editeurs.size());
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=editeurs.xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=\"editeurs.xlsx\"");
 
-        try (Workbook workbook = new XSSFWorkbook()) {
+        try (Workbook workbook = new XSSFWorkbook(); var baos = new java.io.ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Editeurs");
             Row header = sheet.createRow(0);
             Cell headerCell = header.createCell(0);
@@ -88,14 +90,14 @@ public class HelloController {
                 row.createCell(1).setCellValue(editeur.getNom());
                 row.createCell(2).setCellValue(editeur.getLogo());
             }
-            // Écrire dans un buffer pour éviter les soucis de flux déjà utilisés,
-            // puis écrire une seule fois dans la réponse.
-            try (var baos = new java.io.ByteArrayOutputStream()) {
-                workbook.write(baos);
-                baos.flush();
-                response.getOutputStream().write(baos.toByteArray());
-                response.flushBuffer();
-            }
+            // On passe par un buffer pour éviter les soucis de flux déjà utilisés,
+            // puis on écrit une seule fois dans la réponse HTTP.
+            workbook.write(baos);
+            byte[] bytes = baos.toByteArray();
+            response.setContentLength(bytes.length);
+            response.getOutputStream().write(bytes);
+            response.flushBuffer();
+            LOGGER.info("Export Excel terminé ({} octets envoyés).", bytes.length);
         }
     }
     @GetMapping("/exportPdf")
