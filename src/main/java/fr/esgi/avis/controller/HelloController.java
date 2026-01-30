@@ -102,21 +102,30 @@ public class HelloController {
     }
     @GetMapping("/exportPdf")
     public void editerPdfVue(HttpServletResponse response) throws Exception{
+        LOGGER.info("Début export PDF");
         var editeurs = editeurService.recupererEditeur();
+        LOGGER.info("Nombre d'éditeurs à exporter: {}", editeurs.size());
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition","attachment; filename=editeurs.pdf");
+        response.setHeader("Content-Disposition","attachment; filename=\"editeurs.pdf\"");
 
-        Document doc = new Document();
-        PdfWriter.getInstance(doc, response.getOutputStream());
-        doc.open();
-        for (Editeur editeur : editeurs) {
-            doc.add(new Paragraph(String.valueOf(editeur.getId())));
-            doc.add(new Paragraph(editeur.getNom()));
-            doc.add(new Paragraph(editeur.getLogo()));
-            doc.add(new Paragraph(" "));
+        try (var baos = new java.io.ByteArrayOutputStream()) {
+            Document doc = new Document();
+            PdfWriter.getInstance(doc, baos);
+            doc.open();
+            for (Editeur editeur : editeurs) {
+                doc.add(new Paragraph(String.valueOf(editeur.getId())));
+                doc.add(new Paragraph(editeur.getNom()));
+                doc.add(new Paragraph(editeur.getLogo()));
+                doc.add(new Paragraph(" "));
+            }
+            doc.close(); // ferme le writer et pousse les octets dans le buffer
+
+            byte[] bytes = baos.toByteArray();
+            response.setContentLength(bytes.length);
+            response.getOutputStream().write(bytes);
+            response.flushBuffer();
+            LOGGER.info("Export PDF terminé ({} octets envoyés).", bytes.length);
         }
-        doc.close();
-
     }
 
 }
